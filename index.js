@@ -15,6 +15,10 @@ function shallowCopy (obj) {
   return ret;
 }
 
+function deepCopy (obj) {
+  return JSON.parse(JSON.stringify(obj))
+}
+
 module.exports = function (_opts) {
   _opts || (_opts = {});
   var coll = _opts.sessions || sosa_mem({prefix: _opts.key || 'sosa_session'})('sessions', _opts);
@@ -66,7 +70,7 @@ module.exports = function (_opts) {
             // check signature for changes
             if ((!options.cookie.secure || req.href.protocol === 'https:') && sig(req.session) !== hash) {
               req.session.rev++;
-              coll.save(req.session.id, req.session, function (err) {
+              coll.save(req.session.id, deepCopy(req.session), function (err) {
                 // if another request saved the session first, defer
                 if (err && err.code === 'REV_CONFLICT') return cb && cb();
                 if (err && !cb) return res.emit('error', err);
