@@ -1,5 +1,5 @@
 assert = require('assert');
-request = require('request');
+request = require('request').defaults({jar: true})
 idgen = require('idgen');
 
 testId = idgen();
